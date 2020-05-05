@@ -36,7 +36,7 @@ var (
 	// Local cached copy of a database downloaded from a URL.
 	defaultDB = filepath.Join(os.TempDir(), "freegeoip", "db.gz")
 
-	// MaxMindDB is the URL of the free MaxMind GeoLite2 database.
+	// This is a paid MaxMind GeoIp2City database download url.
 	MaxMindDB = "https://download.maxmind.com/app/geoip_download?edition_id=GeoIP2-City&license_key=LedU1GxlHCYmaRJG&suffix=tar.gz"
 )
 
