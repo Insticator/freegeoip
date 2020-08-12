@@ -1,0 +1,25 @@
+#
+# Image of your container
+#
+image:
+  repository: 357543969433.dkr.ecr.us-east-1.amazonaws.com/freegeoip-stage
+  tag: latest
+  pullPolicy: Always
+
+
+nameOverride: "freegeoip-stage"
+fullnameOverride: "freegeoip-stage"
+# Service ClusterIP or LoadBalancer
+
+service:
+  enabled: false
+  type: ClusterIP
+  port: 8080
+
+# Pod settings
+#
+pod:
+  environment:
+    PORT: 8080
+  livenessProbe: {}
+  readinessProbe: {}

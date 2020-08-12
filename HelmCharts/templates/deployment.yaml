@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "HelmChart.fullname" . }}
+  labels:
+    app: {{ include "HelmChart.name" . }}
+    chart: {{ include "HelmChart.chart" . }}
+
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: {{ include "HelmChart.name" . }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ include "HelmChart.name" . }}
+
+    spec:
+      restartPolicy: "Always"
+      containers:
+        - name: {{ include "HelmChart.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/go/bin/freegeoip"]
+          {{- if .Values.pod.args }}
+          args: # Commands to send to the entrypoint
+{{ toYaml .Values.pod.args | indent 12 }}
+          {{end}}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          {{- with .Values.pod.livenessProbe }}
+          livenessProbe:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with .Values.pod.readinessProbe }}
+          readinessProbe:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.pod.resources | indent 12 }}
+          {{- if .Values.pod.environment }}
+          env: # Environment variables
+          {{- range $key, $value := .Values.pod.environment }}
+           - name: {{ $key }}
+             value: {{ $value | quote }}
+          {{- end }}
+          {{- end }}
