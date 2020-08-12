@@ -1,0 +1,25 @@
+FROM golang:1.14
+Maintainer nClouds
+COPY cmd/freegeoip/public /var/www
+ENV GO111MODULE=on
+ADD . /go/src/github.com/apilayer/freegeoip
+RUN pwd
+WORKDIR /go/src/github.com/apilayer/freegeoip/cmd/freegeoip
+RUN go mod vendor && \
+go get -d && go install
+
+RUN apt-get update && \
+    apt-get install -y libcap2-bin
+
+RUN	ls -lah /go/bin && \
+    setcap cap_net_bind_service=+ep /go/bin/freegeoip
+
+RUN	apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN	useradd -ms /bin/bash freegeoip
+
+USER freegeoip
+ENTRYPOINT ["/go/bin/freegeoip"]
+
+EXPOSE 8080
