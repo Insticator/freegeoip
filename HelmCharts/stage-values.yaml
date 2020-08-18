@@ -6,6 +6,9 @@ image:
   tag: latest
   pullPolicy: Always
 
+replicaCount: 1
+
+namespace: default
 
 nameOverride: "freegeoip-stage"
 fullnameOverride: "freegeoip-stage"
@@ -16,6 +19,9 @@ service:
   type: ClusterIP
   port: 8080
 
+hosts:
+  spm: geoip.hunchme.com
+
 # Pod settings
 #
 pod:
@@ -23,3 +29,15 @@ pod:
     PORT: 8080
   livenessProbe: {}
   readinessProbe: {}
+
+annotations:
+  kubernetes.io/ingress.class: alb
+#  alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+  alb.ingress.kubernetes.io/backend-protocol: HTTP
+  alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+  alb.ingress.kubernetes.io/scheme: internet-facing
+  alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:357543969433:certificate/b87e519e-6e94-4231-b36e-5ef99f50d8fe
+  alb.ingress.kubernetes.io/subnets: "subnet-020ce81aa7e8f707e, subnet-02562aaac1cf3144b"
+  alb.ingress.kubernetes.io/success-codes: '200-404'
+  alb.ingress.kubernetes.io/target-type: ip
+  alb.ingress.kubernetes.io/healthcheck-path: /health

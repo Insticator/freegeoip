@@ -53,3 +53,21 @@ spec:
              value: {{ $value | quote }}
           {{- end }}
           {{- end }}
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "HelmChart.fullname" . }}-ingress
+  namespace: {{ .Values.namespace }}
+  {{- with .Values.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.hosts.geoip }}
+      http:
+        paths:
+        - backend:
+            serviceName: {{ include "HelmChart.fullname" . }}
+            servicePort: {{ .Values.service.port }}
