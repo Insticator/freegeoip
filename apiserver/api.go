@@ -64,8 +64,18 @@ func NewHandler(c *Config) (http.Handler, error) {
 	mux.GET("/csv/*host", f.register("csv", csvWriter))
 	mux.GET("/xml/*host", f.register("xml", xmlWriter))
 	mux.GET("/json/*host", f.register("json", jsonWriter))
+	mux.GET("/health", healthCheckHandler)
 	go watchEvents(db)
 	return mux, nil
+}
+
+// function to check app's health
+func healthCheckHandler(w http.ResponseWriter, r *http.Request) {
+	// A very simple health check.
+	w.WriteHeader(http.StatusOK)
+
+	// return true as there is no database or redis to check the status on.
+	io.WriteString(w, `true`)
 }
 
 func (f *apiHandler) config(mc *httpmux.Config) error {
