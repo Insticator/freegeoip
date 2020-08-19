@@ -70,4 +70,4 @@ spec:
         paths:
         - backend:
             serviceName: {{ include "HelmChart.fullname" . }}
-            servicePort: {{ .Values.service.port }}
+            servicePort: http

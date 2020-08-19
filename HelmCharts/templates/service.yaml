@@ -12,7 +12,7 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ .Chart.Name }}
+    app: {{ include "HelmChart.fullname" . }}
 #If you want to expose the service you must provide a type
 {{- if .Values.service.type }}
   type: {{ .Values.service.type}}

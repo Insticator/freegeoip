@@ -18,9 +18,10 @@ service:
   enabled: false
   type: ClusterIP
   port: 8080
+  path: "/health"
 
 hosts:
-  spm: geoip.hunchme.com
+  geoip: geoip.hunchme.com
 
 # Pod settings
 #
