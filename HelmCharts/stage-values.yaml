@@ -13,6 +13,8 @@ namespace: default
 nameOverride: "freegeoip-stage"
 fullnameOverride: "freegeoip-stage"
 # Service ClusterIP or LoadBalancer
+hpa:
+  cpu_target: 80
 
 service:
   enabled: false

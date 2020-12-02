@@ -1,0 +1,58 @@
+#
+# Image of your container
+#
+image:
+  repository: 357543969433.dkr.ecr.us-east-1.amazonaws.com/freegeoip-stage
+  tag: latest
+  pullPolicy: Always
+
+replicaCount: 2
+
+namespace: default
+
+nameOverride: "freegeoip-prod"
+fullnameOverride: "freegeoip-prod"
+# Service ClusterIP or LoadBalancer
+
+hpa:
+  cpu_target: 80
+
+service:
+  enabled: false
+  type: ClusterIP
+  port: 8080
+  path: "/health"
+
+hosts:
+  geoip: geoip.insticator.com
+
+# Pod settings
+#
+pod:
+  environment:
+    PORT: 8080
+  ports: {}
+     # - name: http
+     #   containerPort: 9090
+     #   protocol: TCP
+  livenessProbe: {}
+    # httpGet:
+    #   path: /
+    #   port: http
+  readinessProbe: {}
+    # httpGet:
+    #   path: /
+    #   port: http
+  args: ["-use-x-forwarded-for"]
+
+annotations:
+  kubernetes.io/ingress.class: alb
+#  alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+  alb.ingress.kubernetes.io/backend-protocol: HTTP
+  alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+  alb.ingress.kubernetes.io/scheme: internet-facing
+  alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:357543969433:certificate/b87e519e-6e94-4231-b36e-5ef99f50d8fe
+  alb.ingress.kubernetes.io/subnets: "subnet-05cd3b4ae69beec48, subnet-06fc1b11bec596738, subnet-0f53377a7a547d883"
+  alb.ingress.kubernetes.io/success-codes: '200-404'
+  alb.ingress.kubernetes.io/target-type: ip
+  alb.ingress.kubernetes.io/healthcheck-path: /health
